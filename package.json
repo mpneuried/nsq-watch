@@ -1,0 +1,48 @@
+{
+  "name": "nsq-watch",
+  "version": "0.0.1",
+  "description": "Watch one or many topics for unprocessed messages.",
+  "keywords": [],
+  "homepage": "https://github.com/mpneuried/nsq-watch",
+  "bugs": "https://github.com/mpneuried/nsq-watch/issues",
+  "author": {
+    "name": "mpneuried",
+    "email": "",
+    "url": "https://github.com/nsq-watch"
+  },
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mpneuried/nsq-watch.git"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "async": "1.5.x",
+    "hyperrequest": "0.0.x",
+    "lodash": "^3.10.1",
+    "mpbasic": "0.0.x",
+    "nsq-nodes": "0.0.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "grunt": "0.4.x",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-docker": "0.0.x",
+    "grunt-include-replace": "*",
+    "grunt-mocha-cli": "*",
+    "grunt-regarde": "*",
+    "morgan": "^1.6.1",
+    "nsq-bundle": "^2.0.1",
+    "nsqjs": "^0.7.8",
+    "should": "4.3.x",
+    "should-sinon": "0.0.3"
+  }
+}
