@@ -12,14 +12,10 @@ DEFAULTS =
 	# **GENERAL**
 	# **active** *Boolean* Configuration to (en/dis)abel the nsq recorder
 	active: true
-	# **clientId** *String|Null* An identifier used to disambiguate this client.
-	clientId: null
 	# **namespace** *String* A namespace for the topics. This will be added/removed transparent to the topics. So only topics within this namespace a relevant.
 	namespace: null
 	
 	# **WATCH**
-	# **ignoreTopics** *String[]|Function* A list of topics that should be ignored or a function that will called to check the ignored topics manually
-	ignoreTopics: null
 	# **lookupdHTTPAddresses** *Number* Time in seconds to poll the nsqlookupd servers to sync the availible topics
 	lookupdPollInterval: 60
 	# **lookupdHTTPAddresses** *String[]* A list of nsq lookup servers
