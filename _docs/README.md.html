@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>README.md</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="doc-style.css" />
+  <script src="doc-filelist.js"></script>
+  <script>
+    var relativeDir = "", thisFile = "README.md", defaultSidebar = true;
+  </script>
+  <script src="doc-script.js"></script>
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#nsq-watch">nsq-watch</a>
+      </div>
+      <div class="heading h2">
+        <a href="#install">Install</a>
+      </div>
+      <div class="heading h2">
+        <a href="#initialize">Initialize</a>
+      </div>
+      <div class="heading h2">
+        <a href="#methods">Methods</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.activate()">.activate()</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.deactivate()">.deactivate()</a>
+      </div>
+      <div class="heading h3">
+        <a href="#.active()">.active()</a>
+      </div>
+      <div class="heading h2">
+        <a href="#events">Events</a>
+      </div>
+      <div class="heading h3">
+        <a href="#status">status</a>
+      </div>
+      <div class="heading h3">
+        <a href="#topic-depth">topic-depth</a>
+      </div>
+      <div class="heading h3">
+        <a href="#depth">depth</a>
+      </div>
+      <div class="heading h3">
+        <a href="#error">error</a>
+      </div>
+      <div class="heading h3">
+        <a href="#ready">ready</a>
+      </div>
+      <div class="heading h2">
+        <a href="#release%20history">Release History</a>
+      </div>
+      <div class="heading h2">
+        <a href="#the%20mit%20license%20(mit)">The MIT License (MIT)</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><div class="docs markdown">
+<div class="pilwrap" id="nsq-watch">
+  <h1>
+    <a href="#nsq-watch" name="nsq-watch" class="pilcrow">&#182;</a>
+    nsq-watch
+  </h1>
+</div>
+
+
+<p><a href="http://travis-ci.org/mpneuried/nsq-watch"><img src="https://secure.travis-ci.org/mpneuried/nsq-watch.png?branch=master" alt="Build Status" title="" /></a>
+<a href="https://david-dm.org/mpneuried/nsq-watch"><img src="https://david-dm.org/mpneuried/nsq-watch.png" alt="Build Status" title="" /></a>
+<a href="http://badge.fury.io/js/nsq-watch"><img src="https://badge.fury.io/js/nsq-watch.png" alt="NPM version" title="" /></a></p>
+
+<p>Watch one or many topics for unprocessed messages.</p>
+
+<p><a href="https://nodei.co/npm/nsq-watch/"><img src="https://nodei.co/npm/nsq-watch.png?downloads=true&amp;stars=true" alt="NPM" title="" /></a></p>
+
+
+<div class="pilwrap" id="install">
+  <h2>
+    <a href="#install" name="install" class="pilcrow">&#182;</a>
+    Install
+  </h2>
+</div>
+
+
+<div class='highlight'><pre><code language=''>  npm install nsq-watch
+</code></pre></div>
+
+
+<div class="pilwrap" id="initialize">
+  <h2>
+    <a href="#initialize" name="initialize" class="pilcrow">&#182;</a>
+    Initialize
+  </h2>
+</div>
+
+
+
+<div class="highlight"><pre><code><span class="k">new</span> <span class="nx">NsqWatch</span><span class="p">(</span> <span class="nx">config</span> <span class="p">);</span>
+</code></pre></div>
+
+
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="kd">var</span> <span class="nx">NsqWatch</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span> <span class="s2">&quot;nsq-watch&quot;</span> <span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">watcher</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">NsqWatch</span><span class="p">({</span>
+    <span class="nx">topics</span><span class="o">:</span> <span class="s2">&quot;&quot;</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+<p><strong>Config</strong>
+- <strong>depthKey</strong> : <em>( <code>String</code> default="depth" )</em> You can pick the key to emit through the depth event out of the nsqd stats answer.
+- <strong>namespace</strong> : <em>( <code>String|Null</code> default=null )</em> Internally prefix the nsq topics. This will be handled transparent, but with this it's possible to separate different environments from each other. E.g. you can run a "staging" and "live" environment on one nsq cluster.
+- <strong>statusPollInterval</strong> : <em>( <code>Number</code> optional: default = <code>180</code> )</em> Time in seconds to poll for node status 
+- <strong>lookupdHTTPAddresses</strong> : <em>( <code>String|String[]</code> required )</em> A single or multiple nsqlookupd hosts. <em>This is also a configuration of <a href="https://github.com/dudleycarr/nsqjs">'nsqjs'</a></em>
+- <strong>lookupdPollInterval</strong> : <em>( <code>Number</code> optional: default = <code>60</code> )</em> Time in seconds to poll the nsqlookupd servers to sync the available nsqwatch. <em>This is also a configuration of <a href="https://github.com/dudleycarr/nsqjs">'nsqjs'</a></em>
+- <strong>active</strong> : <em>( <code>Boolean</code> optional: default = <code>true</code> )</em> Configuration to (de)activate the nsq topics on startup</p>
+
+
+<div class="pilwrap" id="methods">
+  <h2>
+    <a href="#methods" name="methods" class="pilcrow">&#182;</a>
+    Methods
+  </h2>
+</div>
+
+
+
+<div class="pilwrap" id=".activate()">
+  <h3>
+    <a href="#.activate()" name=".activate()" class="pilcrow">&#182;</a>
+    <code>.activate()</code>
+  </h3>
+</div>
+
+
+<p>Activate the module</p>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Boolean )</em>: <code>true</code> if it is now activated. <code>false</code> if it was already active</p>
+
+
+<div class="pilwrap" id=".deactivate()">
+  <h3>
+    <a href="#.deactivate()" name=".deactivate()" class="pilcrow">&#182;</a>
+    <code>.deactivate()</code>
+  </h3>
+</div>
+
+
+<p>Deactivate the module</p>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Boolean )</em>: <code>true</code> if it is now deactivated. <code>false</code> if it was already inactive</p>
+
+
+<div class="pilwrap" id=".active()">
+  <h3>
+    <a href="#.active()" name=".active()" class="pilcrow">&#182;</a>
+    <code>.active()</code>
+  </h3>
+</div>
+
+
+<p>Test if the module is currently active</p>
+
+<p><strong>Return</strong></p>
+
+<p><em>( Boolean )</em>: Is active?</p>
+
+
+<div class="pilwrap" id="events">
+  <h2>
+    <a href="#events" name="events" class="pilcrow">&#182;</a>
+    Events
+  </h2>
+</div>
+
+
+
+<div class="pilwrap" id="status">
+  <h3>
+    <a href="#status" name="status" class="pilcrow">&#182;</a>
+    <code>status</code>
+  </h3>
+</div>
+
+
+<p>publishes status of a node</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>node</strong> : <em>( <code>Object</code> )</em> A raw node object</li>
+<li><strong>stats</strong> : <em>( <code>Array</code> )</em> An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered</li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span> <span class="p">){</span>
+    <span class="c1">// called until new status data where polled</span>
+    <span class="cm">/*</span>
+<span class="cm">    STATS: </span>
+<span class="cm">    [ { topic_name: &#39;foo&#39;,</span>
+<span class="cm">        channels: [],</span>
+<span class="cm">        depth: 2,</span>
+<span class="cm">        backend_depth: 2,</span>
+<span class="cm">        message_count: 0,</span>
+<span class="cm">        paused: false,</span>
+<span class="cm">        e2e_processing_latency: { count: 0, percentiles: null } },</span>
+<span class="cm">      { topic_name: &#39;bar&#39;,</span>
+<span class="cm">        channels: [ &quot;logging&quot; ],</span>
+<span class="cm">        depth: 0,</span>
+<span class="cm">        backend_depth: 0,</span>
+<span class="cm">        message_count: 0,</span>
+<span class="cm">        paused: false,</span>
+<span class="cm">        e2e_processing_latency: { count: 0, percentiles: null } },</span>
+
+<span class="cm">    NODE: </span>
+<span class="cm">        { remote_address: &#39;127.0.0.1:49160&#39;,</span>
+<span class="cm">        hostname: &#39;MyMachineName.local&#39;,</span>
+<span class="cm">        broadcast_address: &#39;MyMachineName.local&#39;,</span>
+<span class="cm">        tcp_port: 4150,</span>
+<span class="cm">        http_port: 4151,</span>
+<span class="cm">        version: &#39;0.3.6&#39;,</span>
+<span class="cm">        tombstones: [ false, false ],</span>
+<span class="cm">        topics: [ &#39;foo&#39;,&#39;bar&#39;]</span>
+<span class="cm">    }</span>
+<span class="cm">    */</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="topic-depth">
+  <h3>
+    <a href="#topic-depth" name="topic-depth" class="pilcrow">&#182;</a>
+    <code>topic-depth</code>
+  </h3>
+</div>
+
+
+<p>publishes depth for each topic.
+Note: If you are using the <code>namespace</code> config. Only the matching topics will be emitted.
+The topic will be without the namespace</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>topic</strong> : <em>( <code>String</code> )</em> The topic name (without the <code>namespace</code> prefix)</li>
+<li><strong>depth</strong> : <em>( <code>Number</code> )</em> The message depth of this topic</li>
+<li><strong>stats</strong> : <em>( <code>Array</code> )</em> An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered</li>
+<li><strong>node</strong> : <em>( <code>Object</code> )</em> A raw node object</li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;topic-depth&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">topic</span><span class="p">,</span> <span class="nx">depth</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span> <span class="p">){</span>
+    <span class="c1">// called until a new topic arrived</span>
+    <span class="cm">/*</span>
+<span class="cm">    TOPIC: foo</span>
+<span class="cm">    DEPTH: 12</span>
+<span class="cm">    STATS: raw stats. See example in `status`</span>
+<span class="cm">    NODE: raw node. See example in `status`</span>
+<span class="cm">    */</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="depth">
+  <h3>
+    <a href="#depth" name="depth" class="pilcrow">&#182;</a>
+    <code>depth</code>
+  </h3>
+</div>
+
+
+<p>the cumulated depth of all topics matching the <code>namespace</code>.</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>depth</strong> : <em>( <code>Number</code> )</em> The depth of all topics matching the namespace</li>
+<li><strong>stats</strong> : <em>( <code>Array</code> )</em> An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered</li>
+<li><strong>node</strong> : <em>( <code>Object</code> )</em> A raw node object</li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">depth</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span> <span class="p">){</span>
+    <span class="c1">// called until a new topic arrived</span>
+    <span class="cm">/*</span>
+<span class="cm">    DEPTH: 58</span>
+<span class="cm">    STATS: raw stats. See example in `status`</span>
+<span class="cm">    NODE: raw node. See example in `status`</span>
+<span class="cm">    */</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="error">
+  <h3>
+    <a href="#error" name="error" class="pilcrow">&#182;</a>
+    <code>error</code>
+  </h3>
+</div>
+
+
+<p>An error occurred. E.g. called if a invalid filter was used or no lookup server is available</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>err</strong> : <em>( <code>Error</code> )</em> The error object. </li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+    <span class="c1">// handle the error</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="ready">
+  <h3>
+    <a href="#ready" name="ready" class="pilcrow">&#182;</a>
+    <code>ready</code>
+  </h3>
+</div>
+
+
+<p>Emitted once the list of topics where received the first time.
+This is just an internal helper. The Method <code>list</code> will also wait for the first response. The events <code>add</code>, <code>remove</code> and <code>change</code> are active after this first response.
+<strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;ready&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">err</span> <span class="p">){</span>
+    <span class="c1">// handle the error</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="release%20history">
+  <h2>
+    <a href="#release%20history" name="release%20history" class="pilcrow">&#182;</a>
+    Release History
+  </h2>
+</div>
+
+
+<p>|Version|Date|Description|
+|:--:|:--:|:--|
+|0.0.3|2015-12-18|added config to set the depth key|
+|0.0.2|2015-12-18|added depth events and handles namespace|
+|0.0.1|2015-12-17|Initial commit|</p>
+
+<p><a href="https://nodei.co/npm/nsq-watch/"><img src="https://nodei.co/npm-dl/nsq-watch.png?months=6" alt="NPM" title="" /></a></p>
+
+<blockquote>
+  <p>Initially Generated with <a href="https://github.com/mpneuried/generator-mpnodemodule">generator-mpnodemodule</a></p>
+</blockquote>
+
+
+<div class="pilwrap" id="the%20mit%20license%20(mit)">
+  <h2>
+    <a href="#the%20mit%20license%20(mit)" name="the%20mit%20license%20(mit)" class="pilcrow">&#182;</a>
+    The MIT License (MIT)
+  </h2>
+</div>
+
+
+<p>Copyright © 2015 M. Peter, <a href='http://www.tcs.de'>http://www.tcs.de</a></p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p></div>
+  </div>
+</body>
+</html>
