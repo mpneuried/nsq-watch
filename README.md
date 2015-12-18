@@ -158,7 +158,7 @@ The topic will be without the namespace
 **Example:**
 
 ```js
-nsqwatch.on( "topic-depth", function( topic, depth, stats, node ){
+nsqwatch.on( "topic-channel-depth", function( topic, channeldepth, channels, stats, node ){
     // called until a new topic arrived
     /*
     TOPIC: foo
@@ -207,7 +207,7 @@ Get the depth over all topics and channels
 **Example:**
 
 ```js
-nsqwatch.on( "depth", function( depth, stats, node ){
+nsqwatch.on( "channel-depth", function( channeldepth, channels, stats, node ){
     // called until a new topic arrived
     /*
     CHANNELDEPTH: 78
