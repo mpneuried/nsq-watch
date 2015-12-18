@@ -296,8 +296,10 @@
 <a class="line-num" href="#line-134" id="line-134">134</a>    
 <a class="line-num" href="#line-135" id="line-135">135</a>    <span class="nv">_processStatus: </span><span class="nf">( stats, node )=&gt;</span>
 <a class="line-num" href="#line-136" id="line-136">136</a>      <span class="nv">_depthAll = </span><span class="mi">0</span>
-<a class="line-num" href="#line-137" id="line-137">137</a>  
-<a class="line-num" href="#line-138" id="line-138">138</a>  </pre></div>
+<a class="line-num" href="#line-137" id="line-137">137</a>      <span class="nv">_depthAllChannels = </span><span class="mi">0</span>
+<a class="line-num" href="#line-138" id="line-138">138</a>      <span class="nv">_topicChannelDepths = </span><span class="p">{}</span>
+<a class="line-num" href="#line-139" id="line-139">139</a>  
+<a class="line-num" href="#line-140" id="line-140">140</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -307,19 +309,30 @@
 </div>
 <p>only generate and calculate the depth of the given namespace</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-137" id="line-137">137</a>  
-<a class="line-num" href="#line-138" id="line-138">138</a>      <span class="k">for</span> <span class="nx">stat</span> <span class="k">in</span> <span class="nx">stats</span> <span class="k">when</span> <span class="nx">@nsTest</span><span class="p">(</span> <span class="nx">stat</span><span class="p">.</span><span class="nx">topic_name</span> <span class="p">)</span>
-<a class="line-num" href="#line-139" id="line-139">139</a>        <span class="nv">_i = </span><span class="nx">stat</span><span class="p">[</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">depthKey</span> <span class="p">]</span>
-<a class="line-num" href="#line-140" id="line-140">140</a>        <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;topic-depth&quot;</span><span class="p">,</span> <span class="nx">@nsRem</span><span class="p">(</span> <span class="nx">stat</span><span class="p">.</span><span class="nx">topic_name</span> <span class="p">),</span> <span class="nx">_i</span><span class="p">,</span> <span class="nx">stat</span><span class="p">,</span> <span class="nx">node</span> <span class="p">)</span>
-<a class="line-num" href="#line-141" id="line-141">141</a>        <span class="nx">_depthAll</span> <span class="o">+=</span> <span class="nx">_i</span>
-<a class="line-num" href="#line-142" id="line-142">142</a>      
-<a class="line-num" href="#line-143" id="line-143">143</a>      <span class="nx">@emit</span> <span class="s">&quot;depth&quot;</span><span class="p">,</span> <span class="nx">_depthAll</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span>
-<a class="line-num" href="#line-144" id="line-144">144</a>      <span class="k">return</span>
-<a class="line-num" href="#line-145" id="line-145">145</a>  
-<a class="line-num" href="#line-146" id="line-146">146</a>    <span class="nv">ERRORS: </span><span class="o">=&gt;</span>
-<a class="line-num" href="#line-147" id="line-147">147</a>      <span class="k">return</span> <span class="nx">@extend</span> <span class="p">{},</span> <span class="k">super</span><span class="p">,</span>
-<a class="line-num" href="#line-148" id="line-148">148</a>  
-<a class="line-num" href="#line-149" id="line-149">149</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-139" id="line-139">139</a>  
+<a class="line-num" href="#line-140" id="line-140">140</a>      <span class="k">for</span> <span class="nx">stat</span> <span class="k">in</span> <span class="nx">stats</span> <span class="k">when</span> <span class="nx">@nsTest</span><span class="p">(</span> <span class="nx">stat</span><span class="p">.</span><span class="nx">topic_name</span> <span class="p">)</span>
+<a class="line-num" href="#line-141" id="line-141">141</a>        <span class="nv">_topic = </span><span class="nx">@nsRem</span><span class="p">(</span> <span class="nx">stat</span><span class="p">.</span><span class="nx">topic_name</span> <span class="p">)</span>
+<a class="line-num" href="#line-142" id="line-142">142</a>        <span class="nv">_i = </span><span class="nx">stat</span><span class="p">[</span> <span class="nx">@config</span><span class="p">.</span><span class="nx">depthKey</span> <span class="p">]</span>
+<a class="line-num" href="#line-143" id="line-143">143</a>        <span class="nv">_chcount = </span><span class="p">{}</span>
+<a class="line-num" href="#line-144" id="line-144">144</a>        <span class="nv">_chdepth = </span><span class="mi">0</span>
+<a class="line-num" href="#line-145" id="line-145">145</a>        <span class="k">for</span> <span class="nx">ch</span> <span class="k">in</span> <span class="nx">stat</span><span class="p">.</span><span class="nx">channels</span>
+<a class="line-num" href="#line-146" id="line-146">146</a>          <span class="nx">_chcount</span><span class="p">[</span> <span class="nx">ch</span><span class="p">.</span><span class="nx">channel_name</span> <span class="p">]</span> <span class="o">=</span> <span class="nx">ch</span><span class="p">.</span><span class="nx">depth</span>
+<a class="line-num" href="#line-147" id="line-147">147</a>          <span class="nx">_chdepth</span> <span class="o">+=</span> <span class="nx">ch</span><span class="p">.</span><span class="nx">depth</span>
+<a class="line-num" href="#line-148" id="line-148">148</a>        
+<a class="line-num" href="#line-149" id="line-149">149</a>        <span class="nx">_topicChannelDepths</span><span class="p">[</span><span class="nx">_topic</span><span class="p">]</span> <span class="o">=</span> <span class="nx">_chcount</span>
+<a class="line-num" href="#line-150" id="line-150">150</a>        <span class="nx">_depthAllChannels</span> <span class="o">+=</span> <span class="nx">_chdepth</span>
+<a class="line-num" href="#line-151" id="line-151">151</a>        <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;topic-depth&quot;</span><span class="p">,</span> <span class="nx">_topic</span><span class="p">,</span> <span class="nx">_i</span><span class="p">,</span> <span class="nx">stat</span><span class="p">,</span> <span class="nx">node</span> <span class="p">)</span>
+<a class="line-num" href="#line-152" id="line-152">152</a>        <span class="nx">@emit</span><span class="p">(</span> <span class="s">&quot;topic-channel-depth&quot;</span><span class="p">,</span> <span class="nx">_topic</span><span class="p">,</span> <span class="nx">_chdepth</span><span class="p">,</span> <span class="nx">_chcount</span><span class="p">,</span> <span class="nx">stat</span><span class="p">,</span> <span class="nx">node</span> <span class="p">)</span>
+<a class="line-num" href="#line-153" id="line-153">153</a>        <span class="nx">_depthAll</span> <span class="o">+=</span> <span class="nx">_i</span>
+<a class="line-num" href="#line-154" id="line-154">154</a>      
+<a class="line-num" href="#line-155" id="line-155">155</a>      <span class="nx">@emit</span> <span class="s">&quot;depth&quot;</span><span class="p">,</span> <span class="nx">_depthAll</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span>
+<a class="line-num" href="#line-156" id="line-156">156</a>      <span class="nx">@emit</span> <span class="s">&quot;channel-depth&quot;</span><span class="p">,</span> <span class="nx">_depthAllChannels</span><span class="p">,</span> <span class="nx">_topicChannelDepths</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span>
+<a class="line-num" href="#line-157" id="line-157">157</a>      <span class="k">return</span>
+<a class="line-num" href="#line-158" id="line-158">158</a>  
+<a class="line-num" href="#line-159" id="line-159">159</a>    <span class="nv">ERRORS: </span><span class="o">=&gt;</span>
+<a class="line-num" href="#line-160" id="line-160">160</a>      <span class="k">return</span> <span class="nx">@extend</span> <span class="p">{},</span> <span class="k">super</span><span class="p">,</span>
+<a class="line-num" href="#line-161" id="line-161">161</a>  
+<a class="line-num" href="#line-162" id="line-162">162</a>  </pre></div>
         </td>
       </tr>
       <tr>
@@ -329,12 +342,12 @@
 </div>
 <p>Exceptions</p>
         </td>
-        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-148" id="line-148">148</a>  
-<a class="line-num" href="#line-149" id="line-149">149</a>        <span class="s">&quot;ECHECKEREXISTS&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="mi">409</span><span class="p">,</span> <span class="s">&quot;A checker for the node `&lt;%=node%&gt;` allready exists&quot;</span> <span class="p">]</span>
-<a class="line-num" href="#line-150" id="line-150">150</a>        <span class="s">&quot;ECHECKERNOTFOUND&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="mi">404</span><span class="p">,</span> <span class="s">&quot;The checker for the node `&lt;%=node%&gt;` was not found&quot;</span> <span class="p">]</span>
-<a class="line-num" href="#line-151" id="line-151">151</a>  
-<a class="line-num" href="#line-152" id="line-152">152</a>  <span class="nv">module.exports = </span><span class="nx">NsqWatch</span>
-<a class="line-num" href="#line-153" id="line-153">153</a>  </pre></div>
+        <td class="code highlight"><div class="highlight"><pre><a class="line-num" href="#line-161" id="line-161">161</a>  
+<a class="line-num" href="#line-162" id="line-162">162</a>        <span class="s">&quot;ECHECKEREXISTS&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="mi">409</span><span class="p">,</span> <span class="s">&quot;A checker for the node `&lt;%=node%&gt;` allready exists&quot;</span> <span class="p">]</span>
+<a class="line-num" href="#line-163" id="line-163">163</a>        <span class="s">&quot;ECHECKERNOTFOUND&quot;</span><span class="o">:</span> <span class="p">[</span> <span class="mi">404</span><span class="p">,</span> <span class="s">&quot;The checker for the node `&lt;%=node%&gt;` was not found&quot;</span> <span class="p">]</span>
+<a class="line-num" href="#line-164" id="line-164">164</a>  
+<a class="line-num" href="#line-165" id="line-165">165</a>  <span class="nv">module.exports = </span><span class="nx">NsqWatch</span>
+<a class="line-num" href="#line-166" id="line-166">166</a>  </pre></div>
         </td>
       </tr>
   </tbody>

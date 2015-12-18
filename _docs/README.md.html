@@ -49,7 +49,13 @@
         <a href="#topic-depth">topic-depth</a>
       </div>
       <div class="heading h3">
+        <a href="#topic-channel-depth">topic-channel-depth</a>
+      </div>
+      <div class="heading h3">
         <a href="#depth">depth</a>
+      </div>
+      <div class="heading h3">
+        <a href="#channel-depth">channel-depth</a>
       </div>
       <div class="heading h3">
         <a href="#error">error</a>
@@ -288,6 +294,46 @@ The topic will be without the namespace</p>
 
 
 
+<div class="pilwrap" id="topic-channel-depth">
+  <h3>
+    <a href="#topic-channel-depth" name="topic-channel-depth" class="pilcrow">&#182;</a>
+    <code>topic-channel-depth</code>
+  </h3>
+</div>
+
+
+<p>publishes channel-depth for each topic.
+Note: If you are using the <code>namespace</code> config. Only the matching topics will be emitted.
+The topic will be without the namespace</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>topic</strong> : <em>( <code>String</code> )</em> The topic name (without the <code>namespace</code> prefix)</li>
+<li><strong>channeldepth</strong> : <em>( <code>Number</code> )</em> Cumulated count of depth over all channels of the topics.</li>
+<li><strong>channels</strong> : <em>( <code>Object</code> )</em> An object with the channel name as key and the current depth as value</li>
+<li><strong>stats</strong> : <em>( <code>Array</code> )</em> An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered</li>
+<li><strong>node</strong> : <em>( <code>Object</code> )</em> A raw node object</li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;topic-depth&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">topic</span><span class="p">,</span> <span class="nx">depth</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span> <span class="p">){</span>
+    <span class="c1">// called until a new topic arrived</span>
+    <span class="cm">/*</span>
+<span class="cm">    TOPIC: foo</span>
+<span class="cm">    CHANNELDEPTH: 65</span>
+<span class="cm">    CHANNELS: { &quot;fizz-channel&quot;: 23, &quot;buzz-channel&quot;: 42 } // the sum of all keys is represented by `channeldepth`</span>
+<span class="cm">    STATS: raw stats. See example in `status`</span>
+<span class="cm">    NODE: raw node. See example in `status`</span>
+<span class="cm">    */</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
 <div class="pilwrap" id="depth">
   <h3>
     <a href="#depth" name="depth" class="pilcrow">&#182;</a>
@@ -313,6 +359,42 @@ The topic will be without the namespace</p>
     <span class="c1">// called until a new topic arrived</span>
     <span class="cm">/*</span>
 <span class="cm">    DEPTH: 58</span>
+<span class="cm">    STATS: raw stats. See example in `status`</span>
+<span class="cm">    NODE: raw node. See example in `status`</span>
+<span class="cm">    */</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="channel-depth">
+  <h3>
+    <a href="#channel-depth" name="channel-depth" class="pilcrow">&#182;</a>
+    <code>channel-depth</code>
+  </h3>
+</div>
+
+
+<p>Get the depth over all topics and channels</p>
+
+<p><strong>Arguments</strong> </p>
+
+<ul>
+<li><strong>channeldepth</strong> : <em>( <code>Number</code> )</em> Cumulated count of depth over all channels and topics.</li>
+<li><strong>channels</strong> : <em>( <code>Object</code> )</em> An object with the topic name as key and an object of channel depth.</li>
+<li><strong>stats</strong> : <em>( <code>Array</code> )</em> An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered</li>
+<li><strong>node</strong> : <em>( <code>Object</code> )</em> A raw node object</li>
+</ul>
+
+<p><strong>Example:</strong></p>
+
+
+<div class="highlight"><pre><code><span class="nx">nsqwatch</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;depth&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">depth</span><span class="p">,</span> <span class="nx">stats</span><span class="p">,</span> <span class="nx">node</span> <span class="p">){</span>
+    <span class="c1">// called until a new topic arrived</span>
+    <span class="cm">/*</span>
+<span class="cm">    CHANNELDEPTH: 78</span>
+<span class="cm">    CHANNELS: { &quot;foo-topic&quot;:{ &quot;fizz-channel&quot;: 23, &quot;buzz-channel&quot;: 42 }, &quot;bar-topic&quot;:{ &quot;fizz-channel&quot;: 13 } }</span>
 <span class="cm">    STATS: raw stats. See example in `status`</span>
 <span class="cm">    NODE: raw node. See example in `status`</span>
 <span class="cm">    */</span>
@@ -380,6 +462,7 @@ This is just an internal helper. The Method <code>list</code> will also wait for
 
 <p>|Version|Date|Description|
 |:--:|:--:|:--|
+|0.0.4|2015-12-18|added channel depths|
 |0.0.3|2015-12-18|added config to set the depth key|
 |0.0.2|2015-12-18|added depth events and handles namespace|
 |0.0.1|2015-12-17|Initial commit|</p>

@@ -141,6 +141,35 @@ nsqwatch.on( "topic-depth", function( topic, depth, stats, node ){
 });
 ```
 
+### `topic-channel-depth`
+
+publishes channel-depth for each topic.
+Note: If you are using the `namespace` config. Only the matching topics will be emitted.
+The topic will be without the namespace
+
+**Arguments** 
+
+- **topic** : *( `String` )* The topic name (without the `namespace` prefix)
+- **channeldepth** : *( `Number` )* Cumulated count of depth over all channels of the topics.
+- **channels** : *( `Object` )* An object with the channel name as key and the current depth as value
+- **stats** : *( `Array` )* An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered
+- **node** : *( `Object` )* A raw node object
+
+**Example:**
+
+```js
+nsqwatch.on( "topic-depth", function( topic, depth, stats, node ){
+    // called until a new topic arrived
+    /*
+    TOPIC: foo
+    CHANNELDEPTH: 65
+    CHANNELS: { "fizz-channel": 23, "buzz-channel": 42 } // the sum of all keys is represented by `channeldepth`
+    STATS: raw stats. See example in `status`
+    NODE: raw node. See example in `status`
+    */
+});
+```
+
 ### `depth`
 
 the cumulated depth of all topics matching the `namespace`.
@@ -158,6 +187,31 @@ nsqwatch.on( "depth", function( depth, stats, node ){
     // called until a new topic arrived
     /*
     DEPTH: 58
+    STATS: raw stats. See example in `status`
+    NODE: raw node. See example in `status`
+    */
+});
+```
+
+### `channel-depth`
+
+Get the depth over all topics and channels
+
+**Arguments** 
+
+- **channeldepth** : *( `Number` )* Cumulated count of depth over all channels and topics.
+- **channels** : *( `Object` )* An object with the topic name as key and an object of channel depth.
+- **stats** : *( `Array` )* An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered
+- **node** : *( `Object` )* A raw node object
+
+**Example:**
+
+```js
+nsqwatch.on( "depth", function( depth, stats, node ){
+    // called until a new topic arrived
+    /*
+    CHANNELDEPTH: 78
+    CHANNELS: { "foo-topic":{ "fizz-channel": 23, "buzz-channel": 42 }, "bar-topic":{ "fizz-channel": 13 } }
     STATS: raw stats. See example in `status`
     NODE: raw node. See example in `status`
     */
@@ -195,6 +249,7 @@ nsqwatch.on( "ready", function( err ){
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.0.4|2015-12-18|added channel depths|
 |0.0.3|2015-12-18|added config to set the depth key|
 |0.0.2|2015-12-18|added depth events and handles namespace|
 |0.0.1|2015-12-17|Initial commit|

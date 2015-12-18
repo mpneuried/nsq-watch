@@ -133,13 +133,26 @@ class NsqWatch extends require( "./basic" )
 	
 	_processStatus: ( stats, node )=>
 		_depthAll = 0
+		_depthAllChannels = 0
+		_topicChannelDepths = {}
 		# only generate and calculate the depth of the given namespace
 		for stat in stats when @nsTest( stat.topic_name )
+			_topic = @nsRem( stat.topic_name )
 			_i = stat[ @config.depthKey ]
-			@emit( "topic-depth", @nsRem( stat.topic_name ), _i, stat, node )
+			_chcount = {}
+			_chdepth = 0
+			for ch in stat.channels
+				_chcount[ ch.channel_name ] = ch.depth
+				_chdepth += ch.depth
+			
+			_topicChannelDepths[_topic] = _chcount
+			_depthAllChannels += _chdepth
+			@emit( "topic-depth", _topic, _i, stat, node )
+			@emit( "topic-channel-depth", _topic, _chdepth, _chcount, stat, node )
 			_depthAll += _i
 		
 		@emit "depth", _depthAll, stats, node
+		@emit "channel-depth", _depthAllChannels, _topicChannelDepths, stats, node
 		return
 
 	ERRORS: =>
