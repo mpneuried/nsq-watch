@@ -19,6 +19,8 @@ class NsqWatch extends require( "./basic" )
 			ignoreNodes: null
 			# **namespace** *String* A namespace for the nodes. This will be added/removed transparent to the topics. So only nodes within this namespace a relevant.
 			namespace: null
+			# **depthKey** *String* The key to grab the depth out of
+			depthKey: "depth"
 
 	constructor: ( options )->
 		
@@ -133,8 +135,9 @@ class NsqWatch extends require( "./basic" )
 		_depthAll = 0
 		# only generate and calculate the depth of the given namespace
 		for stat in stats when @nsTest( stat.topic_name )
-			@emit( "topic-depth", @nsRem( stat.topic_name ), stat.depth, stat, node )
-			_depthAll += stat.depth
+			_i = stat[ @confnig.depthKey ]
+			@emit( "topic-depth", @nsRem( stat.topic_name ), _i, stat, node )
+			_depthAll += _i
 		
 		@emit "depth", _depthAll, stats, node
 		return

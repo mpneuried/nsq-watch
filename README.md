@@ -32,7 +32,8 @@ var watcher = new NsqWatch({
 });
 ```
 
-**Config** 
+**Config**
+- **depthKey** : *( `String` default="depth" )* You can pick the key to emit through the depth event out of the nsqd stats answer.
 - **namespace** : *( `String|Null` default=null )* Internally prefix the nsq topics. This will be handled transparent, but with this it's possible to separate different environments from each other. E.g. you can run a "staging" and "live" environment on one nsq cluster.
 - **statusPollInterval** : *( `Number` optional: default = `180` )* Time in seconds to poll for node status 
 - **lookupdHTTPAddresses** : *( `String|String[]` required )* A single or multiple nsqlookupd hosts. *This is also a configuration of ['nsqjs'](https://github.com/dudleycarr/nsqjs)*
@@ -194,6 +195,7 @@ nsqwatch.on( "ready", function( err ){
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.0.3|2015-12-18|added config to set the depth key|
 |0.0.2|2015-12-18|added depth events and handles namespace|
 |0.0.1|2015-12-17|Initial commit|
 
