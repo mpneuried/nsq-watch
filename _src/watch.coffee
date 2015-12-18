@@ -135,7 +135,7 @@ class NsqWatch extends require( "./basic" )
 		_depthAll = 0
 		# only generate and calculate the depth of the given namespace
 		for stat in stats when @nsTest( stat.topic_name )
-			_i = stat[ @confnig.depthKey ]
+			_i = stat[ @config.depthKey ]
 			@emit( "topic-depth", @nsRem( stat.topic_name ), _i, stat, node )
 			_depthAll += _i
 		
