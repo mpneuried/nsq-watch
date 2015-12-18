@@ -17,7 +17,7 @@ class NsqWatch extends require( "./basic" )
 		@extend super,
 			# **ignoreNodes** *String[]|Function* A list of nodes that should be ignored or a function that will called to check the ignored nodes manually
 			ignoreNodes: null
-			# **namespace** *String* A namespace for the nodes. This will be added/removed transparent to the nodes. So only nodes within this namespace a relevant.
+			# **namespace** *String* A namespace for the nodes. This will be added/removed transparent to the topics. So only nodes within this namespace a relevant.
 			namespace: null
 
 	constructor: ( options )->
@@ -100,8 +100,9 @@ class NsqWatch extends require( "./basic" )
 			@_handleError( "addChecker", "ECHECKEREXISTS", { node: node } )
 			return
 		@CHECKERS[ _name ] = new Checker( @, node, @config )
-		@CHECKERS[ _name ].on "status", ( data )=>
-			@emit( "status", node, data )
+		@CHECKERS[ _name ].on "status", ( stats )=>
+			@emit( "status", stats, node )
+			@_processStatus( stats, node )
 			return
 
 		@CHECKERS[ _name ].on "error", ( err )=>
@@ -127,7 +128,16 @@ class NsqWatch extends require( "./basic" )
 			@log "info", "checker ´#{node}´ destroyed", Object.keys( @CHECKERS )
 			return
 		return
-
+	
+	_processStatus: ( stats, node )=>
+		_depthAll = 0
+		# only generate and calculate the depth of the given namespace
+		for stat in stats when @nsTest( stat.topic_name )
+			@emit( "topic-depth", @nsRem( stat.topic_name ), stat.depth, stat, node )
+			_depthAll += stat.depth
+		
+		@emit "depth", _depthAll, stats, node
+		return
 
 	ERRORS: =>
 		return @extend {}, super,

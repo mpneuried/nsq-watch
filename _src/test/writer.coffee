@@ -44,7 +44,6 @@ class NsqWriter extends require( "./basic" )
 	_initClient: =>
 		if @client?
 			return @client
-		console.log @config.host, @config.port
 		@client = new nsq.Writer( @config.host, @config.port )
 
 		@client.on( nsq.Writer.READY, @onConnect )

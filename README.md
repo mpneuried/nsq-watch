@@ -68,35 +68,98 @@ Test if the module is currently active
 
 ## Events
 
-### `add`
+### `status`
 
-A new topic was added
+publishes status of a node
 
 **Arguments** 
 
-- **topic** : *( `String` )* The new topic
+- **node** : *( `Object` )* A raw node object
+- **stats** : *( `Array` )* An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered
 
 **Example:**
 
 ```js
-nsqwatch.on( "add", function( topic ){
-    // called until a new topic arrived
+nsqwatch.on( "status", function( stats, node ){
+    // called until new status data where polled
+    /*
+    STATS: 
+    [ { topic_name: 'foo',
+        channels: [],
+        depth: 2,
+        backend_depth: 2,
+        message_count: 0,
+        paused: false,
+        e2e_processing_latency: { count: 0, percentiles: null } },
+      { topic_name: 'bar',
+        channels: [ "logging" ],
+        depth: 0,
+        backend_depth: 0,
+        message_count: 0,
+        paused: false,
+        e2e_processing_latency: { count: 0, percentiles: null } },
+    
+    NODE: 
+        { remote_address: '127.0.0.1:49160',
+        hostname: 'MyMachineName.local',
+        broadcast_address: 'MyMachineName.local',
+        tcp_port: 4150,
+        http_port: 4151,
+        version: '0.3.6',
+        tombstones: [ false, false ],
+        topics: [ 'foo','bar']
+    }
+    */
 });
 ```
 
-### `remove`
+### `topic-depth`
 
-A existing topic was removed
+publishes depth for each topic.
+Note: If you are using the `namespace` config. Only the matching topics will be emitted.
+The topic will be without the namespace
 
 **Arguments** 
 
-- **topic** : *( `String` )* The removed topic
+- **topic** : *( `String` )* The topic name (without the `namespace` prefix)
+- **depth** : *( `Number` )* The message depth of this topic
+- **stats** : *( `Array` )* An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered
+- **node** : *( `Object` )* A raw node object
 
 **Example:**
 
 ```js
-nsqwatch.on( "remove", function( topic ){
-    // called until a topic was removed
+nsqwatch.on( "topic-depth", function( topic, depth, stats, node ){
+    // called until a new topic arrived
+    /*
+    TOPIC: foo
+    DEPTH: 12
+    STATS: raw stats. See example in `status`
+    NODE: raw node. See example in `status`
+    */
+});
+```
+
+### `depth`
+
+the cumulated depth of all topics matching the `namespace`.
+
+**Arguments** 
+
+- **depth** : *( `Number` )* The depth of all topics matching the namespace
+- **stats** : *( `Array` )* An raw array of topics stats hold by this node. The topics here will include the namespaces within the name and are not filtered
+- **node** : *( `Object` )* A raw node object
+
+**Example:**
+
+```js
+nsqwatch.on( "depth", function( depth, stats, node ){
+    // called until a new topic arrived
+    /*
+    DEPTH: 58
+    STATS: raw stats. See example in `status`
+    NODE: raw node. See example in `status`
+    */
 });
 ```
 
@@ -131,7 +194,8 @@ nsqwatch.on( "ready", function( err ){
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|0.0.1|2015-11-27|Initial commit|
+|0.0.2|2015-12-18|added depth events and handles namespace|
+|0.0.1|2015-12-17|Initial commit|
 
 [![NPM](https://nodei.co/npm-dl/nsq-watch.png?months=6)](https://nodei.co/npm/nsq-watch/)
 

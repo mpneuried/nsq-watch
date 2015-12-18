@@ -30,6 +30,7 @@ class NsqChecker extends require( "./basic" )
 			return
 			
 		@fetch()
+		
 		@_interval = setInterval( @fetch, @config.statusPollInterval * 1000 )
 		return
 
