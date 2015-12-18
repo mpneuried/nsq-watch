@@ -33,10 +33,10 @@ var watcher = new NsqWatch({
 ```
 
 **Config** 
-
+- **namespace** : *( `String|Null` default=null )* Internally prefix the nsq topics. This will be handled transparent, but with this it's possible to separate different environments from each other. E.g. you can run a "staging" and "live" environment on one nsq cluster.
+- **statusPollInterval** : *( `Number` optional: default = `180` )* Time in seconds to poll for node status 
 - **lookupdHTTPAddresses** : *( `String|String[]` required )* A single or multiple nsqlookupd hosts. *This is also a configuration of ['nsqjs'](https://github.com/dudleycarr/nsqjs)*
 - **lookupdPollInterval** : *( `Number` optional: default = `60` )* Time in seconds to poll the nsqlookupd servers to sync the available nsqwatch. *This is also a configuration of ['nsqjs'](https://github.com/dudleycarr/nsqjs)*
-- **topicFilter** : *( `Null|String|Array|RegExp|Function` optional: default = `null` )* A filter to reduce the returned topics
 - **active** : *( `Boolean` optional: default = `true` )* Configuration to (de)activate the nsq topics on startup
 
 
