@@ -1,6 +1,6 @@
 {
   "name": "nsq-watch",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "Watch one or many topics for unprocessed messages.",
   "keywords": [],
   "homepage": "https://github.com/mpneuried/nsq-watch",
@@ -25,9 +25,9 @@
   "dependencies": {
     "async": "1.5.x",
     "hyperrequest": "0.0.x",
-    "lodash": "^3.10.1",
+    "lodash": "4.x",
     "mpbasic": "0.0.x",
-    "nsq-nodes": "0.0.1"
+    "nsq-nodes": "0.0.x"
   },
   "devDependencies": {
     "body-parser": "^1.14.2",
@@ -42,7 +42,6 @@
     "morgan": "^1.6.1",
     "nsq-bundle": "^2.0.1",
     "nsqjs": "^0.7.8",
-    "should": "8.0.x",
-    "should-sinon": "0.0.3"
+    "should": "8.x"
   }
 }

@@ -5,7 +5,7 @@
 
 # **npm modules**
 async = require( "async" )
-_ = require( "lodash" )
+_isString = require( "lodash/isString" )
 request = require( "hyperrequest" )
 
 # **internal modules**
@@ -38,8 +38,8 @@ class NsqChecker extends require( "./basic" )
 		clearInterval( @_interval ) if @_interval?
 		return
 
-	_prepareUrl: ()->
-		return "http://" + @node.hostname + ":" + @node.http_port + "/stats?format=json"
+	_prepareUrl: =>
+		return "http://" + @node.broadcast_address + ":" + @node.http_port + "/stats?format=json"
 
 	fetch: =>
 		if not @config.active
@@ -62,7 +62,7 @@ class NsqChecker extends require( "./basic" )
 				cb( err, null )
 				return
 
-			if _.isString( result.body )
+			if _isString( result.body )
 				_body = JSON.parse( result.body )
 			else
 				_body = result.body
@@ -70,8 +70,8 @@ class NsqChecker extends require( "./basic" )
 			if _body.status_code is 200
 				cb( null, _body?.data?.topics or [] )
 				return
-
-			@_handleError( "EINVALIDRESPONSE",  )
+			@error( "invalid-nsq-response", result )
+			@_handleError( cb, "EINVALIDRESPONSE" )
 
 			return
 		return

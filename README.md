@@ -249,6 +249,9 @@ nsqwatch.on( "ready", function( err ){
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|0.0.7|2016-05-04|Fixed configuration|
+|0.0.6|2016-05-04|Fixed remote url|
+|0.0.5|2016-05-04|Bugfix and Dependency updates|
 |0.0.4|2015-12-18|added channel depths|
 |0.0.3|2015-12-18|added config to set the depth key|
 |0.0.2|2015-12-18|added depth events and handles namespace|

@@ -4,7 +4,8 @@
 # A checker factory to spin up on checker per node
 
 # **npm modules**
-_ = require( "lodash" )
+_isArray = require( "lodash/isArray" )
+_isFunction = require( "lodash/isFunction" )
 
 # **internal modules**
 Config = require "./config"
@@ -48,9 +49,9 @@ class NsqWatch extends require( "./basic" )
 
 		@Nodes.filter ( node, nname )=>
 			if @config.ignoreNodes?
-				if _.isArray( @config.ignoreNodes ) and nname in @config.ignoreNodes
+				if _isArray( @config.ignoreNodes ) and nname in @config.ignoreNodes
 					return false
-				if _.isFunction( @config.ignoreNodes )
+				if _isFunction( @config.ignoreNodes )
 					return @config.ignoreNodes( node, nname )
 					
 			return true

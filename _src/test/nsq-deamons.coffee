@@ -2,7 +2,7 @@ spawn = require('child_process').spawn
 fs = require( "fs" )
 pathHelper = require( "path" )
 
-_ = require('lodash')
+_isArray = require('lodash/isArray')
 
 _nsqDataPath = pathHelper.resolve( "./.nsqdata/" )
 
@@ -60,7 +60,7 @@ class Deamons extends require( "events" ).EventEmitter
 	create: ( options, closed )->
 		_args = []
 		for _k, _v of options.args
-			if _.isArray( _v )
+			if _isArray( _v )
 				for _vs in _v
 					_arg = "-" + _k
 					if _vs?

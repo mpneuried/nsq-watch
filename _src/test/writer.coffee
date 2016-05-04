@@ -5,7 +5,7 @@
 
 # **npm modules**
 nsq = require 'nsqjs'
-_ = require 'lodash'
+_isString = require 'lodash/isString'
 
 # **internal modules**
 
@@ -62,7 +62,7 @@ class NsqWriter extends require( "./basic" )
 			return
 
 		@debug "publish", topic, @nsAdd( topic )
-		if _.isString()
+		if _isString()
 			_data = data
 		else
 			_data = JSON.stringify(data)

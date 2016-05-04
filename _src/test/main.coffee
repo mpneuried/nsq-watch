@@ -1,5 +1,7 @@
 should = require('should')
-_ = require('lodash')
+
+_assignIn = require( "lodash/assignIn" )
+_map = require( "lodash/map" )
 
 config = require( "../config" )
 
@@ -29,7 +31,7 @@ describe "----- nsq-watcher TESTS -----", ->
 	before ( done )->
 		#testServers.stop ->
 		testServers.start ->
-			watcher = new NsqWatch( _.extend( {}, CNF ) )
+			watcher = new NsqWatch( _assignIn( {}, CNF ) )
 
 			config = watcher.config
 			
@@ -55,7 +57,7 @@ describe "----- nsq-watcher TESTS -----", ->
 			@timeout( 5000 )
 			
 			_check = ( stats, node )->
-				_.pluck( stats, "topic_name" ).should.containEql( CNF.namespace + _topic )
+				_map( stats, "topic_name" ).should.containEql( CNF.namespace + _topic )
 				watcher.removeListener( "status", _check )
 				done()
 				return

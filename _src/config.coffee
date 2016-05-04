@@ -3,8 +3,10 @@
 # a collection of shared nsq methods
 
 # **npm modules**
-_ = require( "lodash" )
-extend = require( "extend" )
+_isFunction = require( "lodash/isFunction" )
+_isObject = require( "lodash/isObject" )
+_isArray = require( "lodash/isArray" )
+_assignIn = require( "lodash/assignIn" )
 
 # **internal modules**
 
@@ -34,14 +36,14 @@ addGetter = ( prop, _get, context )=>
 		enumerable: true
 		writable: true
 
-	if _.isFunction( _get )
+	if _isFunction( _get )
 		_obj.get = _get
 	else
 		_obj.value = _get
 	Object.defineProperty( context, prop, _obj )
 	return
 
-class Config
+class ConfigNsqWatch
 	
 	constructor: ( input )->
 		for _k, _v of DEFAULTS
@@ -53,14 +55,18 @@ class Config
 	set: ( key, value )=>
 		if not key?
 			return
-		if _.isObject( key )
-			for _k, _v of key
+		
+		if key is "set"
+			return
+		
+		if _isObject( key )
+			for _k, _v of key when key.hasOwnProperty( _k )
 				@set( _k, _v )
 			return
-		if _.isObject( @[ key ] ) and _.isObject( value ) and not _.isArray( value )
-			@[ key ] = extend( true, {}, @[ key ], value )
+		if _isObject( @[ key ] ) and _isObject( value ) and not _isArray( value ) and not _isFunction( value )
+			@[ key ] = _assignIn( true, {}, @[ key ], value )
 		else
 			@[ key ] = value
 		return
 
-module.exports = Config
+module.exports = ConfigNsqWatch

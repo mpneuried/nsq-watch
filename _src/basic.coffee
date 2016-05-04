@@ -4,7 +4,6 @@
 # a collection of shared nsq methods
 
 # **npm modules**
-_ = require( "lodash" )
 
 # **internal modules**
 Config = require "./config"
@@ -20,10 +19,10 @@ class NsqBasic extends require( "mpbasic" )()
 			return @constructor.name.toLowerCase()
 
 		# extend the internal config
-		if options instanceof Config
+		if options?.constructor.name is "ConfigNsqWatch"
 			@config = options
 		else
-			@config = new Config( _.extend( @defaults(), options ) )
+			@config = new Config( @extend( @defaults(), options ) )
 
 		if not @config.active
 			@log "warning", "disabled"

@@ -4,23 +4,24 @@
 # a collection of shared nsq methods
 
 # **npm modules**
-_ = require( "lodash" )
+_isFunction = require( "lodash/isFunction" )
+_isString = require( "lodash/isString" )
 
 # **internal modules**
 
 class NsqBasic extends require( "../basic" )
 
 	fetchClientId: =>
-		if _.isFunction( @config.clientId )
+		if _isFunction( @config.clientId )
 			_cid = @config.clientId()
-			if not _.isString( @config.clientId )
+			if not _isString( @config.clientId )
 				@_handleError( null, "EINVALIDCLIENTID" )
 				return
 				
 			@config.clientId = _cid
 			return @config.clientId
 		
-		if _.isString( @config.clientId )
+		if _isString( @config.clientId )
 			return @config.clientId
 		
 		@_handleError( null, "EINVALIDCLIENTID" )
