@@ -249,6 +249,7 @@ nsqwatch.on( "ready", function( err ){
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|1.0.0|2019-01-27|updated module to handle nsq > & < 1.x|
 |0.0.7|2016-05-04|Fixed configuration|
 |0.0.6|2016-05-04|Fixed remote url|
 |0.0.5|2016-05-04|Bugfix and Dependency updates|

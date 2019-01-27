@@ -15,9 +15,9 @@ class NsqWriter extends require( "./basic" )
 	defaults: =>
 		@extend super,
 			# **host** *String* Host of a nsqd
-			host: "127.0.0.1"
+			host: process.env.NSQ_HOST || "127.0.0.1"
 			# **port** *Number* Port of a nsqd
-			port: 4150
+			port: parseInt( process.env.NSQ_PORT || "4150", 10 )
 
 			# **deflate** *Boolean* Use zlib Deflate compression.
 			deflate: false

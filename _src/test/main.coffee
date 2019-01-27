@@ -11,12 +11,15 @@ testServers = require( "./nsq-deamons" )
 TestWriter = require( "./writer" )
 NsqWatch = require( "../." )
 
+NO_DEAMONS = if process.env.NO_DEAMONS then true else false
+
 CNF =
 	clientId: "mochaTest"
 	lookupdPollInterval: 1
 	statusPollInterval: 1
 	logging: {}
-	lookupdHTTPAddresses: [ "localhost:4161", "localhost:4163" ]
+	lookupdHTTPAddresses: testServers.lookupdAddresses( "http" )
+	lookupdTCPAddresses: testServers.lookupdAddresses( "tcp" )
 	namespace: "nsqwatch_"
 
 testData = require( "./data" )( CNF.namespace )
@@ -30,7 +33,7 @@ describe "----- nsq-watcher TESTS -----", ->
 	
 	before ( done )->
 		#testServers.stop ->
-		testServers.start ->
+		step2 = ->
 			watcher = new NsqWatch( _assignIn( {}, CNF ) )
 
 			config = watcher.config
@@ -41,12 +44,32 @@ describe "----- nsq-watcher TESTS -----", ->
 				return
 			writer.connect()
 			return
+
+		if NO_DEAMONS
+			step2()
+			return
+		
+		@timeout( 10000 )
+		testServers.start ->
+			step2()
+			return
+		
 		return
 	
-	after: ( done )->
+	after ( done )->
+
 		testData.cleanup config.lookupdHTTPAddresses, ->
+			
 			watcher.destroy ->
-				testServers.stop( done )
+
+				if NO_DEAMONS
+					done()
+					process.exit(0)
+					return
+				testServers.stop ->
+					done()
+					process.exit(0)
+					return
 				return
 			return
 		return
@@ -57,9 +80,10 @@ describe "----- nsq-watcher TESTS -----", ->
 			@timeout( 5000 )
 			
 			_check = ( stats, node )->
-				_map( stats, "topic_name" ).should.containEql( CNF.namespace + _topic )
-				watcher.removeListener( "status", _check )
-				done()
+				if stats.length
+					_map( stats, "topic_name" ).should.containEql( CNF.namespace + _topic )
+					watcher.removeListener( "status", _check )
+					done()
 				return
 			
 			watcher.on "status", _check

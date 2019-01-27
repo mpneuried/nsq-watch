@@ -1,25 +1,26 @@
+services:
+  - docker
 os:
   - linux
-sudo: false
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-4.8
+env:
+  - NSQ_VERSION=0.3.8
+  - NSQ_VERSION=1.1.0
 language: node_js
 node_js:
-  - 0.10
-  - 0.12
-  - 4.0
-  - 4.1
-  - 4.2
-  - 5.0
-  - 5.1
-  - 5.2
-  - iojs
-before_install:
-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+  - 6
+  - 8
+  - 10
+  - lts/*
+  - node
 before_script:
-  - "npm install -g mocha grunt-cli"
-  - "grunt build"
+  - export HOST=$( ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1' | head -1)
+  - docker-compose up -d
+  - curl localhost:4177/info
+  - export NSQ_LOOKUP_A_HOST=$HOST
+  - export NSQ_LOOKUP_B_HOST=$HOST
+  - export NSQ_HOST=$HOST
+  - export NO_DEAMONS=1
+  - npm run build
+after_script:
+  - docker-compose stop
+  - docker-compose rm -f

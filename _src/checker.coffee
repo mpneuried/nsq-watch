@@ -67,8 +67,11 @@ class NsqChecker extends require( "./basic" )
 			else
 				_body = result.body
 
-			if _body.status_code is 200
-				cb( null, _body?.data?.topics or [] )
+			if result.statusCode is 200
+				if _body.status_code?
+					cb( null, _body?.data?.topics or [] )
+				else if _body.topics?
+					cb( null, _body?.topics or [] )
 				return
 			@error( "invalid-nsq-response", result )
 			@_handleError( cb, "EINVALIDRESPONSE" )

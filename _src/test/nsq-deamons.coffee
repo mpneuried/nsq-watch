@@ -9,27 +9,33 @@ _nsqDataPath = pathHelper.resolve( "./.nsqdata/" )
 try
 	fs.mkdirSync( _nsqDataPath )
 
-deamons = [
+LOOKUP_A_HOST = process.env.NSQ_LOOKUP_A_HOST || "0.0.0.0"
+LOOKUP_B_HOST = process.env.NSQ_LOOKUP_B_HOST || "0.0.0.0"
+NSQ_HOST = process.env.NSQ_HOST || "0.0.0.0"
+
+daemonsConfig = [
 	{
 		"name": "LOOKUP-A"
 		"bin": "nsqlookupd"
 		"args": {
-			"http-address": "127.0.0.1:4161"
-			"tcp-address": "127.0.0.1:4160"
+			"http-address": LOOKUP_A_HOST + ":4177"
+			"tcp-address": LOOKUP_A_HOST + ":4176"
 		}
 	},{
 		"name": "LOOKUP-B"
 		"bin": "nsqlookupd"
 		"args": {
-			"http-address": "127.0.0.1:4163"
-			"tcp-address": "127.0.0.1:4162"
+			"http-address": LOOKUP_B_HOST + ":4179"
+			"tcp-address": LOOKUP_B_HOST + ":4178"
 		}
 	},{
 		"name": "NSQ"
 		"bin": "nsqd"
 		"args": {
-			"lookupd-tcp-address": [ "127.0.0.1:4160", "127.0.0.1:4162" ]
-			"data-path": _nsqDataPath	
+			"http-address": NSQ_HOST + ":4157"
+			"tcp-address": NSQ_HOST + ":4156"
+			"lookupd-tcp-address": [ LOOKUP_A_HOST + ":4176", LOOKUP_B_HOST + ":4160" ]
+			"data-path": _nsqDataPath
 		}
 	}
 ]
@@ -56,6 +62,18 @@ class Deamons extends require( "events" ).EventEmitter
 		
 		setTimeout( cb, 1000 )
 		return
+
+	lookupdAddresses: ( type="http" )=>
+		_ret = []
+		for daemon in daemonsConfig when daemon.bin is "nsqlookupd"
+			_ret.push daemon.args?[ type + "-address" ]
+		
+		return _ret
+		
+	nsqdAddress: ( type="http" )=>
+		for daemon in daemonsConfig when daemon.bin is "nsqd"
+			return daemon.args?[ type + "-address" ]
+		return null
 	
 	create: ( options, closed )->
 		_args = []
